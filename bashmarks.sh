@@ -23,14 +23,14 @@
 
 
 # USAGE: 
-# s bookmarkname - saves the curr dir as bookmarkname
-# g bookmarkname - jumps to the that bookmark
-# g b[TAB] - tab completion is available
-# p bookmarkname - prints the bookmark
-# p b[TAB] - tab completion is available
-# d bookmarkname - deletes the bookmark
-# d [TAB] - tab completion is available
-# l - list all bookmarks
+# jadd bookmarkname - saves the curr dir as bookmarkname
+# j bookmarkname - jumps to the that bookmark
+# j b[TAB] - tab completion is available
+# jp bookmarkname - prints the bookmark
+# jp b[TAB] - tab completion is available
+# jrm bookmarkname - deletes the bookmark
+# jrm [TAB] - tab completion is available
+# jl - list all bookmarks
 
 # setup file to store bookmarks
 if [ ! -n "$SDIRS" ]; then
@@ -42,7 +42,7 @@ RED="0;31m"
 GREEN="0;33m"
 
 # save current directory to bookmarks
-function s {
+function jadd {
     check_help $1
     _bookmark_name_valid "$@"
     if [ -z "$exit_message" ]; then
@@ -53,7 +53,7 @@ function s {
 }
 
 # jump to bookmark
-function g {
+function j {
     check_help $1
     source $SDIRS
     target="$(eval $(echo echo $(echo \$DIR_$1)))"
@@ -67,14 +67,14 @@ function g {
 }
 
 # print bookmark
-function p {
+function jp {
     check_help $1
     source $SDIRS
     echo "$(eval $(echo echo $(echo \$DIR_$1)))"
 }
 
 # delete bookmark
-function d {
+function jrm {
     check_help $1
     _bookmark_name_valid "$@"
     if [ -z "$exit_message" ]; then
@@ -87,17 +87,17 @@ function d {
 function check_help {
     if [ "$1" = "-h" ] || [ "$1" = "-help" ] || [ "$1" = "--help" ] ; then
         echo ''
-        echo 's <bookmark_name> - Saves the current directory as "bookmark_name"'
-        echo 'g <bookmark_name> - Goes (cd) to the directory associated with "bookmark_name"'
-        echo 'p <bookmark_name> - Prints the directory associated with "bookmark_name"'
-        echo 'd <bookmark_name> - Deletes the bookmark'
-        echo 'l                 - Lists all available bookmarks'
+        echo 'jadd <bookmark_name> - Saves the current directory as "bookmark_name"'
+        echo 'j <bookmark_name> - Goes (cd) to the directory associated with "bookmark_name"'
+        echo 'jp <bookmark_name> - Prints the directory associated with "bookmark_name"'
+        echo 'jrm <bookmark_name> - Deletes the bookmark'
+        echo 'jl                 - Lists all available bookmarks'
         kill -SIGINT $$
     fi
 }
 
-# list bookmarks with dirnam
-function l {
+# list bookmarks with dirname
+function jl {
     check_help $1
     source $SDIRS
         
@@ -158,12 +158,12 @@ function _purge_line {
 
 # bind completion command for g,p,d to _comp
 if [ $ZSH_VERSION ]; then
-    compctl -K _compzsh g
-    compctl -K _compzsh p
-    compctl -K _compzsh d
+    compctl -K _compzsh j
+    compctl -K _compzsh jp
+    compctl -K _compzsh jrm
 else
     shopt -s progcomp
-    complete -F _comp g
-    complete -F _comp p
-    complete -F _comp d
+    complete -F _comp j
+    complete -F _comp jp
+    complete -F _comp jrm
 fi
